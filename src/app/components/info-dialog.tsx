@@ -10,6 +10,7 @@ export default function InfoDialog({task, open, setOpen, onApprove}: {task: Task
 
     function handleApprove() {
         task.parentView = false
+        task.state = TaskState.Approved
         if (onApprove) {
             onApprove(task)
         }

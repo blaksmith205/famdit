@@ -5,6 +5,7 @@ import InfoDialog from "./info-dialog";
 
 export enum TaskState {
     Available, // Color with black text
+    Approved, // Color with black text
     Pending, // Color with yellow text
     Credited, // Color with green text
     Transfered, // Color with red text
@@ -23,6 +24,7 @@ export type Task = {
     amount: number;
     parentView: boolean; // When true, the task is shown in the parent view
     state: TaskState;
+    external: boolean;
     info?: string;
     actions?: TaskAction[];
     completedOn?: Date;
@@ -41,6 +43,7 @@ function getStyle(task: Task) {
     let style = "";
     switch (task.state) {
         case TaskState.Available:
+        case TaskState.Approved:
             style = "text-black-400";
             break;
         case TaskState.Pending:
@@ -88,7 +91,7 @@ function getDate(task: Task): string {
     let nowDate = new Date().toLocaleDateString()
     // Need the parent to approve the task by reading through the requirements (info)
     // Or the task to be available for the child
-    if ((task.parentView && task.state == TaskState.Available) || (!task.parentView && task.state == TaskState.Available)) {
+    if ((task.parentView && task.state <= TaskState.Approved) || (!task.parentView && task.state <= TaskState.Approved)) {
         return "Complete by " + (task.completeBy ? task.completeBy.toLocaleDateString() : nowDate)
     } else {
         return "Completed " + (task.completedOn ? task.completedOn.toLocaleDateString() : nowDate)
