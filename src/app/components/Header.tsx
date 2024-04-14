@@ -11,7 +11,7 @@ export default function Header({links}: {links: {href: string, label: string}[]}
         <header className='fixed left-0 top-0 flex w-full justify-center pb-6 pt-8 gap-80'>
             <a href='/'>
                 <UserIcon
-                    className="-mr-1 ml-2 h-20 w-20 text-gray-200 hover:text-gray-100"
+                    className="-mr-1 ml-2 h-20 w-20 text-gray-500 hover:text-black"
                     aria-hidden="true"
                 />
             </a>
@@ -21,7 +21,7 @@ export default function Header({links}: {links: {href: string, label: string}[]}
                 <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black/20 px-4 py-2 text-sm font-medium text-white hover:bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
                     Sign In As
                     <ChevronDownIcon
-                        className="-mr-1 ml-2 h-5 w-5 text-gray-200 hover:text-gray-100"
+                        className="-mr-1 ml-2 h-5 w-5 text-gray-500 hover:text-black"
                         aria-hidden="true"
                     />
                 </Menu.Button>

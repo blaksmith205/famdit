@@ -16,12 +16,14 @@ export enum TaskAction {
     Repeat, // Allow the task to be scheduled
 }
 
+export type TaskConsumer = (task: Task) => void
+
 export type Task = {
     name: string;
     amount: number;
     parentView: boolean; // When true, the task is shown in the parent view
     state: TaskState;
-    info: string;
+    info?: string;
     actions?: TaskAction[];
     completedOn?: Date;
 }
@@ -58,19 +60,22 @@ function buildButton(action: TaskAction, task: Task, stateChanger : (state: bool
 
     switch (action) {
         case TaskAction.Info:
+            // Show the Info Dialog when the icon is pressed
             ref = {icon: InformationCircleIcon, handler: () => stateChanger(true)};
             break;
         case TaskAction.Approve:
+            // Approve the task when the icon is pressed
             ref = {icon: CheckCircleIcon, handler: () => approve(task)};
             break;
         case TaskAction.Repeat:
+            // Open the repeat dialog when the icon is pressed
             ref = {icon: ClockIcon, handler: () => repeatTask(task)};
             break;
     }
     if (ref) {
         return (
             <button key={action} onClick={ref.handler}>
-                <ref.icon className="size-6 text-black-200 hover:text-black-100" aria-hidden="true"/>
+                <ref.icon className="size-6 text-gray-500 hover:text-black" aria-hidden="true"/>
             </button>
         )
     } else {
@@ -83,7 +88,7 @@ export default function TaskBlock({task}: {task: Task}) {
     
     return (
         <>
-        <div className="rounded-md p-2 shadow-md bg-white">
+        <div className="rounded p-2 shadow-md bg-white mb-2">
             <div className='flex justify-end'>
                 {task.actions?.map((action) => buildButton(action, task, setDialogOpen))}
             </div>
