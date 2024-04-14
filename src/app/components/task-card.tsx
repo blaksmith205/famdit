@@ -103,7 +103,7 @@ export default function TaskBlock({task, onApprove}: {task: Task, onApprove?: Ta
     
     return (
         <>
-        <div className="rounded p-2 shadow-md bg-white mb-2">
+        <div className="rounded p-2 shadow-md bg-white mb-2 border">
             <div className='flex justify-end'>
                 {task.actions?.map((action) => buildButton(action, task, setDialogOpen))}
             </div>
