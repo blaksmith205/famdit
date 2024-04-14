@@ -1,7 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
-import { TaskConsumer } from './TaskBlock'
-import TaskForm from './TaskForm'
+import { TaskConsumer } from './task-card'
+import TaskForm from './task-form'
 
 export default function CreateTaskDialog({open, setOpen, useTask}: {open: boolean, setOpen: (state: boolean) => void, useTask: TaskConsumer}) {
 

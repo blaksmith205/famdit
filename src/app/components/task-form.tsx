@@ -1,5 +1,5 @@
 import { FormEventHandler, useState } from 'react'
-import { Task, TaskAction, TaskState, TaskConsumer } from './TaskBlock'
+import { Task, TaskAction, TaskState, TaskConsumer } from './task-card'
 
 const emptyTask = {
     name: "",

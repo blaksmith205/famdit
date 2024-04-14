@@ -1,6 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
-import { Task, TaskConsumer, TaskState } from './TaskBlock'
+import { Task, TaskConsumer, TaskState } from './task-card'
 
 export default function InfoDialog({task, open, setOpen, onApprove}: {task: Task, open: boolean, setOpen: (_: boolean) => void, onApprove?: TaskConsumer}) {
   

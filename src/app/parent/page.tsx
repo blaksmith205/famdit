@@ -1,8 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
-import TaskBlock, {TaskState, TaskAction, Task, TaskConsumer } from "../components/TaskBlock";
-import CreateTaskDialog from "../components/CreateTaskDialog";
-import TaskForm from "../components/TaskForm";
+import { useState } from "react";
+import TaskBlock, {TaskState, TaskAction, Task, TaskConsumer } from "../components/task-card";
+import CreateTaskDialog from "../components/create-task-dialog";
+import { PlusIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 
 const defaultTasks = [
     {name:"Dishes", amount: 1, parentView: true, state: TaskState.Pending, info: "Do that dishes when they pile up.", actions: [TaskAction.Approve]},
@@ -32,22 +32,28 @@ export default function ParentPage() {
     }
 
     return (
-        <div className="z-10 max-w-4xl w-full items-center justify-center font-mono text-sm lg:flex">
-            <div className="flex-1">
+        <div className="columns-2 w-full h-screen flex items-center justify-center gap-4 overflow-y-auto">
+            <div className="w-1/4 h-full">
+                <h1>External Tasks</h1>
                 {externalTasks.map((task) =>
                     <TaskBlock key={task.name} task={task} onApprove={handleApproveTask}/>
                 )}
             </div>
-            <div className="flex-col ">
-                <div className="flex justify-end gap-2 py-2">
-                    <button className="text-black hover:text-gray-500 border" onClick={() => setCreateTask(true)}>New Task</button>
-                    <button className="text-black hover:text-gray-500 border">Edit Tasks</button>
+            <div className="w-1/4 h-full">
+                <h1>Available Tasks</h1>
+                <div className="flex justify-end">
+                    <button className="text-gray-500 hover:text-black size-5" onClick={() => setCreateTask(true)}>
+                        <PlusIcon/>
+                    </button>
+                    <button className="text-gray-500 hover:text-black size-5">
+                        <PencilSquareIcon/>
+                    </button>
                 </div>
-                <CreateTaskDialog open={createTask} setOpen={setCreateTask} useTask={addTask}/>
                 {tasks.map((task) =>
                     <TaskBlock key={task.name} task={task}/>
                 )}
             </div>
+            <CreateTaskDialog open={createTask} setOpen={setCreateTask} useTask={addTask}/>
       </div>
     )
 }

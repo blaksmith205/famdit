@@ -1,22 +1,23 @@
 "use client";
-import { usePathname } from 'next/navigation'
 import { Menu } from '@headlessui/react'
 import { Fragment } from 'react'
 import { ChevronDownIcon, UserIcon } from '@heroicons/react/20/solid'
 
-export default function Header({links}: {links: {href: string, label: string}[]}) {
-    const pathname = usePathname()
+export type UserRoute = {
+    href: string;
+    label: string;
+    isChild: boolean;
+}
 
+export default function Header({links}: {links: UserRoute[]}) {
     return (
-        <header className='fixed left-0 top-0 flex w-full justify-center pb-6 pt-8 gap-80'>
+        <div className='fixed left-0 top-0 flex w-full justify-center pb-6 pt-8 gap-80'>
             <a href='/'>
                 <UserIcon
                     className="-mr-1 ml-2 h-20 w-20 text-gray-500 hover:text-black"
                     aria-hidden="true"
                 />
             </a>
-            { pathname !== "/" ? <h1 className='float-center'>Welcome {pathname}!</h1> : <></>}
-            
             <Menu as="div" className="relative inline-block text-left">
                 <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black/20 px-4 py-2 text-sm font-medium text-white hover:bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
                     Sign In As
@@ -37,7 +38,7 @@ export default function Header({links}: {links: {href: string, label: string}[]}
                     ))}
                 </Menu.Items>
             </Menu>
-        </header>
+        </div>
     )
 
 }

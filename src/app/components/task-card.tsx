@@ -1,7 +1,7 @@
 "use client";
 import { ClockIcon, CheckCircleIcon, InformationCircleIcon } from "@heroicons/react/24/outline";
 import { useState } from 'react';
-import InfoDialog from "./InfoDialog";
+import InfoDialog from "./info-dialog";
 
 export enum TaskState {
     Available, // Color with black text
