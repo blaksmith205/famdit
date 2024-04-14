@@ -1,11 +1,19 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
-import { Task } from './TaskBlock'
+import { Task, TaskConsumer, TaskState } from './TaskBlock'
 
-export default function InfoDialog({task, open, setOpen}: {task: Task, open: boolean, setOpen: (arg: boolean) => void}) {
+export default function InfoDialog({task, open, setOpen, onApprove}: {task: Task, open: boolean, setOpen: (_: boolean) => void, onApprove?: TaskConsumer}) {
   
     function closeModal() {
         setOpen(false)
+    }
+
+    function handleApprove() {
+        task.parentView = false
+        if (onApprove) {
+            onApprove(task)
+        }
+        closeModal()
     }
 
     if (task.info) {
@@ -46,14 +54,23 @@ export default function InfoDialog({task, open, setOpen}: {task: Task, open: boo
                             <p className="text-sm text-gray-500"> {task.info} </p>
                         </div>
     
-                        <div className="mt-4">
+                        <div className="inline-flex mt-6 gap-2 justify-center">
                             <button
                             type="button"
-                            className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                            className="rounded-md border border-transparent bg-blue-100 p-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                             onClick={closeModal}
                             >
                             Ok
                             </button>
+                        {(onApprove && task.parentView && task.state == TaskState.Available) &&
+                            <button
+                            type="button"
+                            className="rounded-md border border-transparent bg-blue-100 p-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                            onClick={handleApprove}
+                            >
+                            Approve
+                            </button>
+                        }
                         </div>
                         </Dialog.Panel>
                     </Transition.Child>

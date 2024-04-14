@@ -26,6 +26,7 @@ export type Task = {
     info?: string;
     actions?: TaskAction[];
     completedOn?: Date;
+    completeBy?: Date;
 }
 
 function approve(task: Task) {
@@ -83,7 +84,18 @@ function buildButton(action: TaskAction, task: Task, stateChanger : (state: bool
     }
 }
 
-export default function TaskBlock({task}: {task: Task}) {
+function getDate(task: Task): string {
+    let nowDate = new Date().toLocaleDateString()
+    // Need the parent to approve the task by reading through the requirements (info)
+    // Or the task to be available for the child
+    if ((task.parentView && task.state == TaskState.Available) || (!task.parentView && task.state == TaskState.Available)) {
+        return "Complete by " + (task.completeBy ? task.completeBy.toLocaleDateString() : nowDate)
+    } else {
+        return "Completed " + (task.completedOn ? task.completedOn.toLocaleDateString() : nowDate)
+    }
+}
+
+export default function TaskBlock({task, onApprove}: {task: Task, onApprove?: TaskConsumer}) {
     const [dialogOpen, setDialogOpen] = useState(false);
     
     return (
@@ -96,11 +108,9 @@ export default function TaskBlock({task}: {task: Task}) {
                 <h1 className="flex-1">{task.name}</h1>
                 <div className={getStyle(task)}>${task.amount.toFixed(2)}</div>
             </div>
-            <div className="text-xs">
-                Completed on: {task.completedOn ? task.completedOn.toLocaleDateString() : new Date().toLocaleDateString()}
-            </div>
+            <div className="text-xs">{getDate(task)}</div>
         </div>
-        <InfoDialog task={task} open={dialogOpen} setOpen={setDialogOpen}/>
+        <InfoDialog task={task} open={dialogOpen} setOpen={setDialogOpen} onApprove={onApprove}/>
         </>
     )
 }
