@@ -21,7 +21,7 @@ This will install the packages and start the development server.
 To start the server, a few things need to happen. The first is to run in the background via `pm2 start src/index.js`.
 With the running in the background, now we can restart NGINX if needed with `systemctl restart nginx`. See [this guide](https://medium.com/nerd-for-tech/deploy-your-nodejs-application-to-a-digital-ocean-droplet-step-by-step-guide-3f6f928f776) for more info.
 
-### `npm start`
+### `npm run dev`
 
 Runs the app in the development mode.
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
@@ -43,6 +43,10 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+### `npm start`
+
+Once built, a production version of the application will be run with a default file server.
 
 ### `npm run eject`
 

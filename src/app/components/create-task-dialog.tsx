@@ -47,7 +47,7 @@ export default function CreateTaskDialog({open, setOpen, useTask}: {open: boolea
                     >
                     Create New Task
                     </Dialog.Title>
-                    <TaskForm useTask={useTaskAndClose}/>
+                    <TaskForm consumeTask={useTaskAndClose}/>
                     </Dialog.Panel>
                 </Transition.Child>
                 </div>

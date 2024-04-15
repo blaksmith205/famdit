@@ -8,7 +8,7 @@ const emptyTask = {
     state: TaskState.Approved,
 } as Task;
 
-export default function TaskForm({useTask} : {useTask: TaskConsumer}) {
+export default function TaskForm({consumeTask} : {consumeTask: TaskConsumer}) {
 
     const [name, setName] = useState("");
     const [amount, setAmount] = useState(0);
@@ -27,7 +27,7 @@ export default function TaskForm({useTask} : {useTask: TaskConsumer}) {
             addAction(newTask, TaskAction.Info)
         }
         addAction(newTask, TaskAction.Approve)
-        useTask(newTask);
+        consumeTask(newTask);
         setName("");
         setAmount(0);
         setInfo("")

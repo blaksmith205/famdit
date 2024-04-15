@@ -7,8 +7,8 @@ import { UserProvider } from "./components/accounts";
 const inter = Inter({ subsets: ["latin"] });
 
 const links = [
-  {href: "/parent", label:"Parent", isChild: false},
-  {href: "/john", label:"John", isChild: true},
+  {href: "/parent", label:"Parent"},
+  {href: "/john", label:"John"},
 ] as UserRoute[]
 
 export const metadata: Metadata = {

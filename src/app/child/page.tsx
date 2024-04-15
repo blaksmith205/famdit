@@ -1,10 +1,11 @@
 "use client";
 import { useContext, useState } from "react";
-import TaskBlock, {TaskState, TaskAction, Task, TaskConsumer } from "../components/task-card";
-import { User, UserContext, saveUser } from "../components/accounts";
+import TaskBlock, {Task } from "../components/task-card";
+import { UserContext, saveUser } from "../components/accounts";
 import TransactionCard from "../components/transaction-card";
 import street_map from "./street_map_edited.png";
 import Header from "../components/header";
+import Image from "next/image";
 
 export default function ChildPage() {
     let user = useContext(UserContext);
@@ -38,7 +39,7 @@ export default function ChildPage() {
             <div className="m-auto w-1/2">
                 <Header user={user}/>
             </div>
-            <img className="w-1/2 m-auto mt-10 mb-5" src={street_map.src} alt="Street map view of local tasks" />
+            <Image className="w-1/2 m-auto mt-10 mb-5" src={street_map.src} alt="Street map view of local tasks" />
             <div className="columns-2 w-full flex items-center justify-center gap-4">
                 <div className="w-1/4 h-screen">
                     <h1>Recent Transactions</h1>
