@@ -1,32 +1,61 @@
 "use client";
 import { useState, useContext } from "react";
-import TaskBlock, {TaskState, Task, TaskConsumer } from "./components/task-card";
+import TaskBlock, {TaskState, Task, TaskConsumer, TaskAction } from "./components/task-card";
 import CreateTaskDialog from "./components/create-task-dialog";
 import { PlusIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
-import { User, UserContext, saveUser } from "./components/accounts";
+import { Transaction, User, UserContext, saveUser } from "./components/accounts";
 import ChildCard from "./components/child-card";
 import Header from "./components/header";
 
 export default function ParentPage() {
     let user = useContext(UserContext);
     const [createTask, setCreateTask] = useState(false);
+    const [tasks, setTasks] = useState(user.tasks || [] as Task[])
 
-    function setTasks(tasks: Task[]) {
-        user.tasks = tasks;
+    function updateTasks(t: Task[]) {
+        setTasks(t)
+        user.tasks = t
         saveUser(user);
     }
 
     function addTask(...[task] : Parameters<TaskConsumer>): ReturnType<TaskConsumer> {
-        setTasks([...user.tasks, task]);
+        updateTasks([task, ...user.tasks]);
     }
 
-    function handleApproveTask(task: Task) {
+    // Called when the parent approves the task from the info dialog
+    function handleInfoApprove(task: Task) {
         // Add the element to the child's task list
         if (user.children) {
-            user.children.forEach((user) => user.tasks = user.tasks.concat(task))
+            user.children.forEach((usr) => {
+                if (usr.tasks) {
+                    usr.tasks = [task, ...usr.tasks]
+                } else {
+                    usr.tasks= [task]
+                }
+            })
         }
-        // Remove the task
-        setTasks(user.tasks.filter(t => t.name !== task.name))
+        // Remove the task from the parent
+        updateTasks(user.tasks.filter(t => t.name !== task.name))
+    }
+
+    function handleTaskApprove(task: Task) {
+        if (user.children) {
+            user.children.forEach((usr) => {
+                var newTransaction = {name: 'Task Payment - ' + task.name, amount: task.amount, date: new Date()} as Transaction
+                if (usr.transactions) {
+                    usr.transactions = [newTransaction, ...usr.transactions]
+                } else {
+                    usr.transactions = [newTransaction]
+                }
+                if (usr.balance) {
+                    usr.balance += task.amount
+                }
+            })
+        }
+        // Remove the task from the parent
+        updateTasks(user.tasks.filter(t => t.name !== task.name))
+        // Re-add the task to mark it as paid
+        addTask(task)
     }
 
     function addFunds(child: User) {
@@ -49,7 +78,7 @@ export default function ParentPage() {
                         <div className="w-1/4 h-full">
                             <h1>External Tasks</h1>
                             {user.tasks && user.tasks.map((task) =>
-                                (task.external && task.state !== TaskState.Approved) && <TaskBlock key={task.name} task={task} onApprove={handleApproveTask}/>
+                                (task.external && task.state === TaskState.Available) && <TaskBlock key={task.name} task={task} onApprove={handleInfoApprove}/>
                             )}
                         </div>
                         <div className="w-1/4 h-full">
@@ -63,7 +92,7 @@ export default function ParentPage() {
                                 </button>
                             </div>
                             {user.tasks && user.tasks.map((task) =>
-                                (!task.external || task.state === TaskState.Approved) && <TaskBlock key={task.name} task={task}/>
+                                (!task.external || task.state >= TaskState.Pending) && <TaskBlock key={task.name} task={task} onApprove={handleTaskApprove}/>
                             )}
                         </div>
                         <CreateTaskDialog open={createTask} setOpen={setCreateTask} useTask={addTask}/>

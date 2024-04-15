@@ -1,6 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
-import { Task, TaskConsumer, TaskState } from './task-card'
+import { Task, TaskAction, TaskConsumer, TaskState } from './task-card'
 
 export default function InfoDialog({task, open, setOpen, onApprove}: {task: Task, open: boolean, setOpen: (_: boolean) => void, onApprove?: TaskConsumer}) {
   
@@ -8,7 +8,15 @@ export default function InfoDialog({task, open, setOpen, onApprove}: {task: Task
         setOpen(false)
     }
 
+    // Called when the "Approve" button is pressed in the info dialog (from parent)
     function handleApprove() {
+        // Add the approve action
+        if (task.actions) {
+            task.actions = [...task.actions, TaskAction.Approve]
+        } else {
+            task.actions = [TaskAction.Approve]
+        }
+        // Set the view to child
         task.parentView = false
         task.state = TaskState.Approved
         if (onApprove) {

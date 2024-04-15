@@ -31,12 +31,64 @@ export type Task = {
     completeBy?: Date;
 }
 
-function approve(task: Task) {
-    console.log("Approve task:", task);
+function approve(t: Task, onApprove? : TaskConsumer) {
+    if (t.parentView || t.state === TaskState.Pending) {
+        // The parent approves this transaction
+        t.state = TaskState.Transfered
+        t.actions = t.actions?.filter((action) => action !== TaskAction.Approve)
+    } else if (!t.parentView){
+        // Child needs to inform the parent that the task was completed
+        t.completedOn = new Date()
+        t.state = TaskState.Pending;
+        t.parentView = true;
+    }
+    if (onApprove) {
+        onApprove(t)
+    }
 }
 
 function repeatTask(task: Task) {
     console.log("Repeat task:", task);
+}
+
+function buildButton(action: TaskAction, task: Task, stateChanger : (state: boolean) => void, onApprove? : TaskConsumer) {
+    let ref = null;
+
+    switch (action) {
+        case TaskAction.Info:
+            // Show the Info Dialog when the icon is pressed
+            ref = {icon: InformationCircleIcon, handler: () => stateChanger(true)};
+            break;
+        case TaskAction.Approve:
+            // Approve the task when the icon is pressed
+            ref = {icon: CheckCircleIcon, handler: () => approve(task, onApprove)};
+            break;
+        case TaskAction.Repeat:
+            // Open the repeat dialog when the icon is pressed
+            ref = {icon: ClockIcon, handler: () => repeatTask(task)};
+            break;
+    }
+    if (ref) {
+        return (
+            <button key={action} onClick={ref.handler}>
+                <ref.icon className="size-6 text-gray-500 hover:text-black" aria-hidden="true"/>
+            </button>
+        )
+    } else {
+        return (<></>)
+    }
+}
+
+function getDate(task: Task): string {
+    // Need the parent to approve the task by reading through the requirements (info)
+    // Or the task to be available for the child
+    if (task.completedOn) {
+        return "Completed " + task.completedOn.toLocaleDateString()
+    } else if (task.completeBy) {
+        return "Complete by " + task.completeBy.toLocaleDateString()
+    } else {
+        return ""
+    }
 }
 
 function getStyle(task: Task) {
@@ -59,53 +111,14 @@ function getStyle(task: Task) {
     return style;
 }
 
-function buildButton(action: TaskAction, task: Task, stateChanger : (state: boolean) => void) {
-    let ref = null;
-
-    switch (action) {
-        case TaskAction.Info:
-            // Show the Info Dialog when the icon is pressed
-            ref = {icon: InformationCircleIcon, handler: () => stateChanger(true)};
-            break;
-        case TaskAction.Approve:
-            // Approve the task when the icon is pressed
-            ref = {icon: CheckCircleIcon, handler: () => approve(task)};
-            break;
-        case TaskAction.Repeat:
-            // Open the repeat dialog when the icon is pressed
-            ref = {icon: ClockIcon, handler: () => repeatTask(task)};
-            break;
-    }
-    if (ref) {
-        return (
-            <button key={action} onClick={ref.handler}>
-                <ref.icon className="size-6 text-gray-500 hover:text-black" aria-hidden="true"/>
-            </button>
-        )
-    } else {
-        return (<></>)
-    }
-}
-
-function getDate(task: Task): string {
-    let nowDate = new Date().toLocaleDateString()
-    // Need the parent to approve the task by reading through the requirements (info)
-    // Or the task to be available for the child
-    if ((task.parentView && task.state <= TaskState.Approved) || (!task.parentView && task.state <= TaskState.Approved)) {
-        return "Complete by " + (task.completeBy ? task.completeBy.toLocaleDateString() : nowDate)
-    } else {
-        return "Completed " + (task.completedOn ? task.completedOn.toLocaleDateString() : nowDate)
-    }
-}
-
 export default function TaskBlock({task, onApprove}: {task: Task, onApprove?: TaskConsumer}) {
     const [dialogOpen, setDialogOpen] = useState(false);
-    
+
     return (
         <>
         <div className="rounded p-2 shadow-md bg-white mb-2 border">
             <div className='flex justify-end'>
-                {task.actions?.map((action) => buildButton(action, task, setDialogOpen))}
+                {task.actions?.map((action) => buildButton(action, task, setDialogOpen, onApprove))}
             </div>
             <div className="border-b-2 p-1 flex">
                 <h1 className="flex-1">{task.name}</h1>
