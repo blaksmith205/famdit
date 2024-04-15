@@ -1,6 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
-import { TaskConsumer } from './task-card'
+import { Task, TaskConsumer } from './task-card'
 import TaskForm from './task-form'
 
 export default function CreateTaskDialog({open, setOpen, useTask}: {open: boolean, setOpen: (state: boolean) => void, useTask: TaskConsumer}) {
@@ -9,6 +9,11 @@ export default function CreateTaskDialog({open, setOpen, useTask}: {open: boolea
         setOpen(false)
     }
     
+    function useTaskAndClose(task: Task) {
+        useTask(task)
+        closeModal()
+    }
+
     return (
         <Transition appear show={open} as={Fragment}>
             <Dialog as="div" className="relative z-10" onClose={closeModal}>
@@ -42,7 +47,7 @@ export default function CreateTaskDialog({open, setOpen, useTask}: {open: boolea
                     >
                     Create New Task
                     </Dialog.Title>
-                    <TaskForm useTask={useTask}/>
+                    <TaskForm useTask={useTaskAndClose}/>
                     </Dialog.Panel>
                 </Transition.Child>
                 </div>

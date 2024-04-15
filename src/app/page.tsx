@@ -19,7 +19,8 @@ export default function ParentPage() {
     }
 
     function addTask(...[task] : Parameters<TaskConsumer>): ReturnType<TaskConsumer> {
-        updateTasks([task, ...user.tasks]);
+        // A created task is basically an external one that has been approved
+        handleInfoApprove(task);
     }
 
     // Called when the parent approves the task from the info dialog

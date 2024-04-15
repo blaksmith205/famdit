@@ -5,7 +5,7 @@ const emptyTask = {
     name: "",
     amount: 0,
     parentView: true,
-    state: TaskState.Available,
+    state: TaskState.Approved,
 } as Task;
 
 export default function TaskForm({useTask} : {useTask: TaskConsumer}) {
@@ -26,6 +26,7 @@ export default function TaskForm({useTask} : {useTask: TaskConsumer}) {
             newTask.info = info;
             addAction(newTask, TaskAction.Info)
         }
+        addAction(newTask, TaskAction.Approve)
         useTask(newTask);
         setName("");
         setAmount(0);
