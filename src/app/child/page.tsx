@@ -17,7 +17,7 @@ export default function ChildPage() {
             <div className="m-auto w-1/2">
                 <Header user={user}/>
             </div>
-            <img className="w-1/2 m-auto pt-20 pb-5" src={street_map.src} alt="Street map view of local tasks" />
+            <img className="w-1/2 m-auto mt-10 mb-5" src={street_map.src} alt="Street map view of local tasks" />
             <div className="columns-2 w-full flex items-center justify-center gap-4">
                 <div className="w-1/4 h-full">
                     <h1>Recent Transactions</h1>
@@ -27,7 +27,7 @@ export default function ChildPage() {
                 </div>
                 <div className="w-1/4 h-full">
                     <h1>Available Tasks</h1>
-                    {user.tasks.map((task) =>
+                    {user.tasks && user.tasks.map((task) =>
                         <TaskBlock key={task.name} task={task}/>
                     )}
                 </div>

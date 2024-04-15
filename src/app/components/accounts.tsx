@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { Task, TaskAction, TaskState } from "./task-card";
 
 export type Transaction = {
@@ -13,7 +13,6 @@ export type User = {
     tasks: Task[];
     balance?: number;
     transactions?: Transaction[];
-    parent?: User;
     children?: User[];
 }
 
@@ -48,12 +47,36 @@ const childUser = {
 
 parentUser.children = [childUser];
 
+function userReviver(key: string, value: any) {
+    switch (key) {
+        case "state": return value as TaskState
+        case "actions": return value.map((action: number) => action as TaskAction)
+        case "date": case "completedOn": case "completeBy":return new Date(value)
+        default: return value;
+    }
+}
+
+export function saveUser(user: User) {
+    window.sessionStorage.setItem("famdit-user", JSON.stringify(user));
+}
+
 export function UserProvider({ children }: Readonly<{children: React.ReactNode}>) {
-  const [user, setUser] = useState(parentUser);
+  const [user, setUser] = useState({} as User);
+
+  // Only perform once
+  useEffect(() => {
+    let usr = window.sessionStorage.getItem("famdit-user");
+    if (usr) {
+        setUser(JSON.parse(usr, userReviver));
+    } else {
+        setUser(parentUser);
+        saveUser(parentUser)
+    }
+  }, []);
 
   return (
     <UserContext.Provider value={user}>
         {children}
     </UserContext.Provider>
-  );
+  )
 }
